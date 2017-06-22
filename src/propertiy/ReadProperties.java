@@ -79,10 +79,11 @@ public class ReadProperties {
             if (mapString.equals("{}")) continue;
             p.pList.add(map);
         }
-        filterCam(p, "cam");
-        filterCam(p, "bell");
+        filterCam(p, "CAM");
+        filterCam(p, "BELL");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(p);
+        System.out.println(json);
         Utils.write2File(json, outputFile);
     }
 
@@ -96,10 +97,10 @@ public class ReadProperties {
         List<Integer> pidList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Map<String, String> map = pList.get(i);
-            final String value = map.get("value");
+            final String value = map.get("VALUE");
             if (value != null && value.contains(tag)) {
-                final String pid = map.get("Pid");
-                final String os = map.get("os");
+                final String pid = map.get("PID");
+                final String os = map.get("OS");
                 if (pid != null && pid.length() > 0 && isDigitsOnly(pid)) {
                     if (!pidList.contains(Integer.parseInt(pid)))
                         pidList.add(Integer.parseInt(pid));
@@ -111,13 +112,13 @@ public class ReadProperties {
             }
         }
         Collections.sort(pidList);
-        if (p.typePidMap == null) p.typePidMap = new TreeMap<>((Comparator<String>) String::compareTo);
-        p.typePidMap.put(tag, pidList);
+        if (p.serialMap == null) p.serialMap = new TreeMap<>((Comparator<String>) String::compareTo);
+        p.serialMap.put(tag, pidList);
     }
 
     private static class P {
         private List<TreeMap<String, String>> pList;
-        private TreeMap<String, List<Integer>> typePidMap;
+        private TreeMap<String, List<Integer>> serialMap;
         String version;
 
     }
@@ -133,7 +134,7 @@ public class ReadProperties {
         }
         if (content.contains("."))
             content = content.substring(0, content.lastIndexOf("."));
-        return content;
+        return content.toUpperCase();
     }
 
     private static String versionCode() {
@@ -142,7 +143,7 @@ public class ReadProperties {
     }
 
     private static String getPropertyName(String content) {
-        return content.substring(content.indexOf("(") + 1, content.lastIndexOf(")"));
+        return content.substring(content.indexOf("(") + 1, content.lastIndexOf(")")).toUpperCase();
     }
 
 
