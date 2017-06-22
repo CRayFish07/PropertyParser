@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="json-io-4.9.12-sources">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/libs/json-io-4.9.12-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

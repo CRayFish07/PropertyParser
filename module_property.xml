@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_property" default="compile.module.property">
+  <dirname property="module.property.basedir" file="${ant.file.module_property}"/>
+  
+  <property name="module.jdk.home.property" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.property" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.property" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.property" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="property.output.dir" value="${module.property.basedir}/out/production/Property"/>
+  <property name="property.testoutput.dir" value="${module.property.basedir}/out/test/Property"/>
+  
+  <path id="property.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="property.module.production.classpath">
+    <path refid="${module.jdk.classpath.property}"/>
+    <path refid="library.poi-3.9.classpath"/>
+    <path refid="library.poi-ooxml-3.16.classpath"/>
+    <path refid="library.poi-3.16.classpath"/>
+    <path refid="library.gson-2.6.1.classpath"/>
+    <path refid="library.jackson-mapper-asl-1.9.9-sources.classpath"/>
+  </path>
+  
+  <path id="property.runtime.production.module.classpath">
+    <pathelement location="${property.output.dir}"/>
+    <path refid="library.poi-3.9.classpath"/>
+    <path refid="library.poi-ooxml-3.16.classpath"/>
+    <path refid="library.poi-3.16.classpath"/>
+    <path refid="library.gson-2.6.1.classpath"/>
+    <path refid="library.jackson-mapper-asl-1.9.9-sources.classpath"/>
+  </path>
+  
+  <path id="property.module.classpath">
+    <path refid="${module.jdk.classpath.property}"/>
+    <pathelement location="${property.output.dir}"/>
+    <path refid="library.poi-3.9.classpath"/>
+    <path refid="library.poi-ooxml-3.16.classpath"/>
+    <path refid="library.poi-3.16.classpath"/>
+    <path refid="library.gson-2.6.1.classpath"/>
+    <path refid="library.jackson-mapper-asl-1.9.9-sources.classpath"/>
+  </path>
+  
+  <path id="property.runtime.module.classpath">
+    <pathelement location="${property.testoutput.dir}"/>
+    <pathelement location="${property.output.dir}"/>
+    <path refid="library.poi-3.9.classpath"/>
+    <path refid="library.poi-ooxml-3.16.classpath"/>
+    <path refid="library.poi-3.16.classpath"/>
+    <path refid="library.gson-2.6.1.classpath"/>
+    <path refid="library.jackson-mapper-asl-1.9.9-sources.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.property">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.property">
+    <patternset refid="excluded.from.module.property"/>
+  </patternset>
+  
+  <path id="property.module.sourcepath">
+    <dirset dir="${module.property.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.property" depends="compile.module.property.production,compile.module.property.tests" description="Compile module Property"/>
+  
+  <target name="compile.module.property.production" depends="register.custom.compilers" description="Compile module Property; production classes">
+    <mkdir dir="${property.output.dir}"/>
+    <javac2 destdir="${property.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.property}/javac">
+      <compilerarg line="${compiler.args.property}"/>
+      <bootclasspath refid="property.module.bootclasspath"/>
+      <classpath refid="property.module.production.classpath"/>
+      <src refid="property.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.property"/>
+    </javac2>
+    
+    <copy todir="${property.output.dir}">
+      <fileset dir="${module.property.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.property.tests" depends="register.custom.compilers,compile.module.property.production" description="compile module Property; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.property" description="cleanup module">
+    <delete dir="${property.output.dir}"/>
+    <delete dir="${property.testoutput.dir}"/>
+  </target>
+</project>
